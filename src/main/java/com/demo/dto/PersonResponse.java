@@ -21,7 +21,7 @@ public class PersonResponse implements Serializable {
     private String personCode;
     private String personName;
     @Builder.Default
-    private List<Address> addresses = new ArrayList<>();
+    private List<AddressResponse> addresses = new ArrayList<>();
 
     private String id;
     private boolean markForDelete = false;

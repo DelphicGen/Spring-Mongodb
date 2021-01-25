@@ -4,6 +4,8 @@ import com.demo.base.BaseResponse;
 import com.demo.base.ListBaseResponse;
 import com.demo.base.Metadata;
 import com.demo.base.SingleBaseResponse;
+import com.demo.company.entity.Address;
+import com.demo.company.entity.Department;
 import com.demo.company.entity.Employee;
 import com.demo.company.entity.Person;
 import com.demo.company.service.PersonService;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,7 +76,20 @@ public class PersonController {
         return Optional.ofNullable(person).map(e -> {
             PersonResponse personResponse = PersonResponse.builder().build();
             BeanUtils.copyProperties(e, personResponse);
+
+            List<AddressResponse> list = new ArrayList<>();
+            person.getAddresses().forEach(address -> list.add(toAddressResponse(address)));
+
+            personResponse.setAddresses(list);
             return personResponse;
+        }).orElse(null);
+    }
+
+    private AddressResponse toAddressResponse(Address address) {
+        return Optional.ofNullable(address).map(a -> {
+            AddressResponse addressResponse = AddressResponse.builder().build();
+            BeanUtils.copyProperties(a, addressResponse);
+            return addressResponse;
         }).orElse(null);
     }
 
@@ -81,6 +97,10 @@ public class PersonController {
         return Optional.ofNullable(request).map(e -> {
             Person person = Person.builder().build();
             BeanUtils.copyProperties(e, person);
+
+            List<Address> list = new ArrayList<>();
+            request.getAddresses().forEach(address -> list.add(toAddress(address)));
+            person.setAddresses(list);
             return person;
         }).orElse(null);
     }
@@ -89,7 +109,18 @@ public class PersonController {
         return Optional.ofNullable(request).map(e -> {
             Person person = Person.builder().build();
             BeanUtils.copyProperties(e, person);
+            List<Address> list = new ArrayList<>();
+            request.getAddresses().forEach(address -> list.add(toAddress(address)));
+            person.setAddresses(list);
             return person;
+        }).orElse(null);
+    }
+
+    private Address toAddress(AddressRequest request) {
+        return Optional.ofNullable(request).map(a -> {
+            Address address = Address.builder().build();
+            BeanUtils.copyProperties(a, address);
+            return address;
         }).orElse(null);
     }
 }

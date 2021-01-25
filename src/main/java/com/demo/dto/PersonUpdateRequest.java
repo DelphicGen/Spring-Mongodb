@@ -17,5 +17,5 @@ import java.util.List;
 public class PersonUpdateRequest {
     private String personName;
     @Builder.Default
-    private List<Address> addresses = new ArrayList<>();
+    private List<AddressRequest> addresses = new ArrayList<>();
 }
