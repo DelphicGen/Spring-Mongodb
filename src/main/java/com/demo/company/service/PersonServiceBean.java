@@ -2,41 +2,47 @@ package com.demo.company.service;
 
 import com.demo.company.entity.Person;
 import com.demo.company.repository.PersonRepository;
+import com.demo.config.data.Credential;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 @Service
 public class PersonServiceBean implements PersonService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceBean.class);
     @Autowired
     private PersonRepository personRepository;
 
     @Override
     public void create(Person person) throws Exception {
-//        person.setStoreId(MDC.get(Credential.CREDENTIAL_STORE_ID));
+        person.setStoreId(MDC.get(Credential.CREDENTIAL_STORE_ID));
         personRepository.save(person);
     }
 
     @Override
-    public List<Person> findAllPerson() throws Exception {
-        return personRepository.findAll();
+    public Page<Person> findAllPerson(Pageable pageable) throws Exception {
+        return personRepository.findByMarkForDeleteFalse(pageable);
     }
 
     @Override
-    public Person findPersonByCode(String code) throws Exception {
-        return personRepository.findFirstByPersonCode(code);
+    public Person findByPersonCode(String code) throws Exception {
+        return personRepository.findFirstByPersonCodeAndMarkForDeleteFalse(code);
     }
 
     @Override
     public void update(String personCode, Person person) throws Exception {
-        Person oldPerson = personRepository.findFirstByPersonCode(personCode);
+        Person oldPerson = personRepository.findFirstByPersonCodeAndMarkForDeleteFalse(personCode);
         oldPerson.setPersonName(person.getPersonName());
         oldPerson.setAddresses(person.getAddresses());
         personRepository.save(oldPerson);
     }
 
     @Override
-    public void deletePersonByCode(String code) throws Exception {
+    public void deleteByPersonCode(String code) throws Exception {
         this.personRepository.deleteByPersonCode(code);
     }
 

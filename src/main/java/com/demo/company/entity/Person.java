@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class Person extends MongoBaseEntity {
     public static final String COLLECTION_NAME = "person";
 
 //    public static final String FIELD_ID = "id";
@@ -24,9 +24,9 @@ public class Person {
     public static final String FIELD_PERSON_NAME = "personName";
     public static final String FIELD_ADDRESSES = "addresses";
 
-    @Id
-    @Field(value = MongoBaseEntity.FIELD_ID)
-    private String id;
+//    @Id
+//    @Field(value = MongoBaseEntity.FIELD_ID)
+//    private String id;
 
     @Field(value = Person.FIELD_PERSON_CODE)
     private String personCode;
