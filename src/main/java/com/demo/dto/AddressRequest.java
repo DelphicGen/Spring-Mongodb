@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddressRequest {
     private String addressName;
-
     private String address;
-
     private String city;
 }

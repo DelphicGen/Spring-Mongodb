@@ -25,6 +25,12 @@ public class PersonServiceBean implements PersonService {
 
     @Override
     public Page<Person> findAllPerson(Pageable pageable) throws Exception {
+
+//        LOGGER.trace("A TRACE Message");
+//        LOGGER.debug("A DEBUG Message");
+//        LOGGER.info("An INFO Message");
+//        LOGGER.warn("A WARN Message");
+//        LOGGER.error("An ERROR Message");
         return personRepository.findByMarkForDeleteFalse(pageable);
     }
 
