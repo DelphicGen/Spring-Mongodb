@@ -1,4 +1,4 @@
-package com.blibli.demo;
+package com.demo;
 
 import com.demo.DemoApplication;
 import com.demo.base.BaseResponse;
@@ -56,6 +56,7 @@ public class EmployeeControllerIntegrationTest {
 
   private EmployeeCreateRequest request;
   private DepartmentRequest departmentRequest;
+  private Employee employee;
 
   @Autowired
   private EmployeeRepository employeeRepository;
@@ -71,6 +72,7 @@ public class EmployeeControllerIntegrationTest {
     employeeRepository.deleteAll();
 //    mongoTemplate.indexOps(Employee.class).ensureIndex(TextIndexDefinition.builder().onField("empNo").build());
     mongoTemplate.indexOps(Employee.class).ensureIndex(new Index("empNo", Sort.Direction.ASC).unique());
+    employee = Employee.builder().empNo(EMP_NO).build();
     departmentRequest =
         DepartmentRequest.builder().deptName(DEPT_NAME).deptNo(DEPT_NO).loc(LOC).build();
     request = EmployeeCreateRequest.builder().empNo(EMP_NO).empName(EMP_NAME).comm(COMM)
@@ -97,9 +99,17 @@ public class EmployeeControllerIntegrationTest {
 
   @Test
   public void createEmployee_failed_returnBaseResponse() throws Exception {
+    employeeRepository.save(employee);
+    ValidatableResponse validatableResponse =
+            RestAssured.given().contentType("application/json").queryParam(STORE_ID_KEY, STORE_ID_VALUE)
+                    .queryParam(CHANNEL_ID_KEY, CHANNEL_ID_VALUE).queryParam(CLIENT_ID, CLIENT_ID_VALUE)
+                    .queryParam(REQUEST_ID_KEY, REQUEST_ID_VALUE).queryParam(USERNAME_KEY, USERNAME_VALUE)
+                    .body(request).post(CONTEXT_PATH + EmployeeControllerPath.BASE_PATH).then();
+
+    BaseResponse baseResponse =
+            objectMapper.readValue(validatableResponse.extract().asString(), BaseResponse.class);
+    Assert.assertFalse(baseResponse.isSuccess());
 
   }
 
-  // @Test
-  // public void
 }
